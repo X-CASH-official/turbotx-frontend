@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Including Bootstrap Icons in HTML</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+    <!-- Bootstrap Font Icon CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+ 
+  <style>
+    blockquote {
+    border-left:none
+}
+ 
+.quote-badge {
+    background-color: #000000;
+    background-color: rgba(0, 0, 0, 0.2);   
+}
+ 
+.quote-box {
+ 
+    overflow: hidden;
+    margin-top: 5%;
+    padding-top: -2.5%;
+    border-radius: 17px;
+    background-color: #FFA500;
+    color: white;
+    width:100%;
+    box-shadow: 2px 2px 2px 2px #E0E0E0;
+ 
+}
+ 
+.quote-boxamount {
+ 
+    overflow: hidden;
+    margin-top: 5%;
+    padding-top: -2.5%;
+    border-radius: 17px;
+    background-color: #0000FF;
+    color: white;
+    width:100%;
+    box-shadow: 2px 2px 2px 2px #E0E0E0;
+ 
+}
+ 
+    .quote-boxverified {
+ 
+    overflow: hidden;
+    margin-top: 5%;
+    padding-top: -2.5%;
+    border-radius: 17px;
+    background-color: #4ADFCC;
+    color: white;
+    width:100%;
+    box-shadow: 2px 2px 2px 2px #E0E0E0;
+ 
+}
+ 
+    .quote-boxunverified {
+ 
+    overflow: hidden;
+    margin-top: 5%;
+    padding-top: -2.5%;
+    border-radius: 17px;
+    background-color: #FF3B3B;
+    color: white;
+    width:100%;
+    box-shadow: 2px 2px 2px 2px #E0E0E0;
+ 
+}
+ 
+.quotation-mark {    
+    margin-top: 1%;
+    font-weight: bold;
+    font-size:50px;
+    color: white;
+    font-family: "Times New Roman", Times, Serif;
+ 
+}
+ 
+.quote-text {
+    overflow-wrap: break-word;
+    font-size: 19px;
+    margin-top: 0px;
+}
+ 
+.quote-textamount {
+    overflow-wrap: break-word;
+    font-size: 30px;
+    margin-top: 0px;
+}
+ 
+.blog-post-bottom pull-right {
+ 
+}
+  </style>
+</head>
+<body>
+ 
+ <div class="container">
+ <input type="text" placeholder="ID" id="idtextbox" class="form-control">
+  <button type="button" class="btn btn-primary" onclick="verifytx(document.getElementById('idtextbox').value)">Verify TX</button>
+  </div>
+ 
+ 
+ 
+  <div class="container">
+    <blockquote class="quote-boxverified">
+      <p class="quotation-mark text-center">
+        Verified
+      </p>  
+      <p class="quote-textamount text-center">
+        <div class="quote-textamount text-center" id="id">Turbo Tx: 000000</div>
+        <br>
+        <div class="quote-textamount text-center" id="tx_hash">Tx:0000000000000000000000000000000000000000000000000000000000000000</div>
+      </p>         
+    </blockquote>
+</div>
+ 
+ 
+ 
+  <h1 class="text-center"><i class="bi bi-info-circle-fill"></i></h1>
+ 
+ 
+ 
+ 
+ 
+    <div class="container">
+    <blockquote class="quote-box">
+      <p class="quotation-mark text-center">
+        Sender
+      </p>
+      <p class="quote-text text-center">
+      <div class="quote-text text-center" id="sender">XCA1hVzVdYV4SSVG4nPvQY3SFBdHA2HbdGWPsTQsMfYehXVu5ESLsDtMg9WZozzBpR3pPcEnW2iMBVKRP1nkm3TD52Kkyq1Qrt</div>
+ 
+      </p>
+      <hr>
+      <div class="blog-post-actions">
+        <p class="blog-post-bottom text-center">
+          <div class="quote-textamount text-center" id="timer"></div>
+        </p>        
+      </div>
+    </blockquote>
+</div>
+ 
+ 
+ 
+<h1 class="text-center"><i class="bi bi-arrow-down-square-fill"></i></h1>
+ 
+ 
+ 
+ 
+ 
+<div class="container">
+    <blockquote class="quote-boxamount">
+      <p class="quotation-mark text-center">
+        Amount
+      </p>
+      <p class="quote-textamount text-center">
+        <div class="quote-textamount text-center" id="amount">100</div>
+      </p>     
+    </blockquote>
+</div>
+ 
+ 
+ 
+  <h1 class="text-center"><i class="bi bi-arrow-down-square-fill"></i></h1>
+ 
+ 
+ 
+ 
+  <div class="container">
+    <blockquote class="quote-box">
+      <p class="quotation-mark text-center">
+        Receiver
+      </p>
+      <p class="quote-text text-center">
+        <div class="quote-text text-center" id="receiver">XCA1hVzVdYV4SSVG4nPvQY3SFBdHA2HbdGWPsTQsMfYehXVu5ESLsDtMg9WZozzBpR3pPcEnW2iMBVKRP1nkm3TD52Kkyq1Qrt</div>
+      </p>     
+    </blockquote>
+</div>
+ 
+ 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.min.js"></script>
+ 
+<script>
+// global variables
+var timerVar;
+var totalSeconds;
+ 
+// get the url parameters if any
+var id = window.location.href.split('?')[1].substr(3,6);
+if (id.length === 6)
+{
+  verifytx(id);
+}
+ 
+async function get(URL)
+{
+  const response = await fetch(URL);
+  return await response.json();
+}
+ 
+ 
+function verifytx(txid)
+{
+  if (txid.length !== 6)
+  {
+    return;
+  }
+ 
+  try
+  {
+    // get the tx data
+    let data = await get(`http://116.203.63.86/getturbotx?id=${txid}`);
+    if (data.hasOwnProperty('tx_hash'))
+    {
+      // set the data
+      document.getElementById("id").innerHTML = `Turbo Tx: ${data.id}`;
+      document.getElementById("tx_hash").innerHTML = `Tx: ${data.tx_hash}`;
+      document.getElementById("sender").innerHTML = `Tx: ${data.sender}`;
+      document.getElementById("amount").innerHTML = `Tx: ${data.amount}`;
+      document.getElementById("receiver").innerHTML = `Tx: ${data.receiver}`;
+ 
+      // set the timer data
+      timerVar = setInterval(countTimer, 1000);
+      totalSeconds = Math.round(new Date().getTime()/1000) - data.timestamp;
+    }
+  }
+  catch(error)
+  {
+ 
+  }
+}
+ 
+function countTimer() {
+           ++totalSeconds;
+           var hour = Math.floor(totalSeconds /3600);
+           var minute = Math.floor((totalSeconds - hour*3600)/60);
+           var seconds = totalSeconds - (hour*3600 + minute*60);
+           if(hour < 10)
+             hour = "0"+hour;
+           if(minute < 10)
+             minute = "0"+minute;
+           if(seconds < 10)
+             seconds = "0"+seconds;
+           document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
+        }
+</script>
+ 
+ 
+</body>
+ 
+    </html>
