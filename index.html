@@ -191,10 +191,14 @@ var timerVar;
 var totalSeconds;
  
 // get the url parameters if any
-var id = window.location.href.split('?')[1].substr(3,6);
-if (id.length === 6)
+var id;
+if (window.location.href.includes("?id="))
 {
-  verifytx(id);
+  window.location.href.split('?')[1].substr(3,6);
+  if (id.length === 6)
+  {
+    verifytx(id);
+  }
 }
  
 async function get(URL)
@@ -204,7 +208,7 @@ async function get(URL)
 }
  
  
-function verifytx(txid)
+async function verifytx(txid)
 {
   if (txid.length !== 6)
   {
@@ -214,7 +218,7 @@ function verifytx(txid)
   try
   {
     // get the tx data
-    let data = await get(`http://116.203.63.86/getturbotx?id=${txid}`);
+    let data = await get(`http://162.55.235.87:8000/getturbotx?id=${txid}`);
     if (data.hasOwnProperty('tx_hash'))
     {
       // set the data
