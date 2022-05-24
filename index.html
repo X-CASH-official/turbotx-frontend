@@ -106,9 +106,9 @@
  
  
  
-  <div class="container">
-    <blockquote class="quote-boxverified">
-      <p class="quotation-mark text-center">
+  <div class="container" id="data1">
+    <blockquote id="data1status" class="quote-boxverified">
+      <p class="quotation-mark text-center" id="verified_status">
         Verified
       </p>  
       <p class="quote-textamount text-center">
@@ -117,17 +117,36 @@
         <div class="quote-textamount text-center" id="tx_hash">Tx:0000000000000000000000000000000000000000000000000000000000000000</div>
       </p>         
     </blockquote>
+<h1 class="text-center" id="data1info"><i class="bi bi-info-circle-fill"></i></h1>
 </div>
  
  
  
-  <h1 class="text-center"><i class="bi bi-info-circle-fill"></i></h1>
+  
+
+
+  <div class="container" id="data2">
+    <blockquote class="quote-boxamount">
+      <p class="quotation-mark text-center">
+        TX Status
+      </p>  
+      <p class="quote-textamount text-center">
+        <div class="quote-textamount text-center" id="tx_status">Block Status: True</div>
+        <br>
+        <div class="quote-textamount text-center" id="timer">Time Since Tx Was Sent: 0</div>
+      </p>         
+    </blockquote>
+<h1 class="text-center"><i class="bi bi-info-circle-fill"></i></h1>
+</div>
+
+
+    
  
  
  
  
  
-    <div class="container">
+    <div class="container" id="data3">
     <blockquote class="quote-box">
       <p class="quotation-mark text-center">
         Sender
@@ -143,17 +162,18 @@
         </p>        
       </div>
     </blockquote>
+<h1 class="text-center"><i class="bi bi-arrow-down-square-fill"></i></h1>
 </div>
  
  
  
-<h1 class="text-center"><i class="bi bi-arrow-down-square-fill"></i></h1>
+
  
  
  
  
  
-<div class="container">
+<div class="container" id="data4">
     <blockquote class="quote-boxamount">
       <p class="quotation-mark text-center">
         Amount
@@ -162,16 +182,17 @@
         <div class="quote-textamount text-center" id="amount">100</div>
       </p>     
     </blockquote>
+ <h1 class="text-center"><i class="bi bi-arrow-down-square-fill"></i></h1>
 </div>
  
  
  
-  <h1 class="text-center"><i class="bi bi-arrow-down-square-fill"></i></h1>
  
  
  
  
-  <div class="container">
+ 
+  <div class="container" id="data5">
     <blockquote class="quote-box">
       <p class="quotation-mark text-center">
         Receiver
@@ -186,6 +207,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/js/bootstrap.min.js"></script>
  
 <script>
+// global constants
+const ID_LENGTH = 5;
+const URL = "http://162.55.235.87";
+const BLOCK_VERIFIER_TOTAL_AMOUNT = 14;
+const BLOCK_VERIFIER_VALID_AMOUNT = 9;
+const XCASH_SETTINGS = 1000000;
+
 // global variables
 var timerVar;
 var totalSeconds;
@@ -194,8 +222,8 @@ var totalSeconds;
 var id;
 if (window.location.href.includes("?id="))
 {
-  window.location.href.split('?')[1].substr(3,6);
-  if (id.length === 6)
+  id = window.location.href.split('?')[1].substr(3,ID_LENGTH);
+  if (id.length === ID_LENGTH)
   {
     verifytx(id);
   }
@@ -210,7 +238,7 @@ async function get(URL)
  
 async function verifytx(txid)
 {
-  if (txid.length !== 6)
+  if (txid.length !== ID_LENGTH)
   {
     return;
   }
@@ -218,24 +246,99 @@ async function verifytx(txid)
   try
   {
     // get the tx data
-    let data = await get(`http://162.55.235.87:8000/getturbotx?id=${txid}`);
+    let data = await get(`${URL}/getturbotx?id=${txid}`);
     if (data.hasOwnProperty('tx_hash'))
     {
-      // set the data
-      document.getElementById("id").innerHTML = `Turbo Tx: ${data.id}`;
-      document.getElementById("tx_hash").innerHTML = `Tx: ${data.tx_hash}`;
-      document.getElementById("sender").innerHTML = `Tx: ${data.sender}`;
-      document.getElementById("amount").innerHTML = `Tx: ${data.amount}`;
-      document.getElementById("receiver").innerHTML = `Tx: ${data.receiver}`;
+      // check if its verified
+      if (data.block_status === "true" || data.delegate_count >= BLOCK_VERIFIER_VALID_AMOUNT)
+      {
+        // add the data
+        document.getElementById("data1").style.display = "block";
+        document.getElementById("data2").style.display = "block";
+        document.getElementById("data3").style.display = "block";
+        document.getElementById("data4").style.display = "block";
+        document.getElementById("data5").style.display = "block";
+
+        // set the data
+        document.getElementById("data1status").classList.add("quote-boxverified");
+        document.getElementById("data1status").classList.remove("quote-boxunverified");
+        document.getElementById("verified_status").textContent = "Verified";
+        document.getElementById("id").innerHTML = `Turbo Tx: ${data.id}`;
+        document.getElementById("tx_hash").innerHTML = `Tx: ${data.tx_hash}`;
+
+        let delegate_status = Math.round((parseInt(data.delegate_count) / BLOCK_VERIFIER_TOTAL_AMOUNT) * 100);
+        document.getElementById("tx_status").innerHTML = data.block_status === "true" ? `Block Status: True` : `Delegate Verification Status: ${data.delegate_count}/${BLOCK_VERIFIER_TOTAL_AMOUNT} (${delegate_status})`; 
+
+        document.getElementById("sender").innerHTML = data.sender;
+        document.getElementById("amount").innerHTML = data.amount / XCASH_SETTINGS;
+        document.getElementById("receiver").innerHTML = data.receiver;
  
-      // set the timer data
-      timerVar = setInterval(countTimer, 1000);
-      totalSeconds = Math.round(new Date().getTime()/1000) - data.timestamp;
+        // set the timer data
+        timerVar = setInterval(countTimer, 1000);
+        totalSeconds = Math.round(new Date().getTime()/1000) - Math.round(data.timestamp / 1000000000);
+      }
+      else
+      {
+        // add the data
+        document.getElementById("data1").style.display = "block";
+        document.getElementById("data2").style.display = "block";
+        document.getElementById("data3").style.display = "block";
+        document.getElementById("data4").style.display = "block";
+        document.getElementById("data5").style.display = "block";
+
+        // set the data
+        document.getElementById("data1status").classList.add("quote-boxunverified");
+        document.getElementById("data1status").classList.remove("quote-boxverified");
+        document.getElementById("verified_status").textContent = "Not Verified";
+        document.getElementById("id").innerHTML = `Turbo Tx: ${data.id}`;
+        document.getElementById("tx_hash").innerHTML = `Tx: ${data.tx_hash}`;
+
+        let delegate_status = Math.round((parseInt(data.delegate_count) / BLOCK_VERIFIER_TOTAL_AMOUNT) * 100);
+        document.getElementById("tx_status").innerHTML = data.block_status === "true" ? `Block Status: True` : `Delegate Verification Status: ${data.delegate_count}/${BLOCK_VERIFIER_TOTAL_AMOUNT} (${delegate_status})`; 
+
+        document.getElementById("sender").innerHTML = data.sender;
+        document.getElementById("amount").innerHTML = data.amount / XCASH_SETTINGS;
+        document.getElementById("receiver").innerHTML = data.receiver;
+ 
+        // set the timer data
+        timerVar = setInterval(countTimer, 1000);
+        totalSeconds = Math.round(new Date().getTime()/1000) - Math.round(data.timestamp / 1000000000);
+      }
+    }
+    else
+    {
+      // add the data
+      document.getElementById("data1").style.display = "block";
+      document.getElementById("data1info").style.display = "none";
+      document.getElementById("data2").style.display = "none";
+      document.getElementById("data3").style.display = "none";
+      document.getElementById("data4").style.display = "none";
+      document.getElementById("data5").style.display = "none";
+
+      // set the data
+      document.getElementById("data1status").classList.add("quote-boxunverified");
+      document.getElementById("data1status").classList.remove("quote-boxverified");
+      document.getElementById("verified_status").textContent = "Could Not Find ID";
+      document.getElementById("id").innerHTML = `Turbo Tx: ${txid}`;
+      document.getElementById("tx_hash").innerHTML = "";
     }
   }
   catch(error)
   {
- 
+    // add the data
+    document.getElementById("data1").style.display = "block";
+    document.getElementById("data1info").style.display = "none";
+    document.getElementById("data2").style.display = "none";
+    document.getElementById("data3").style.display = "none";
+    document.getElementById("data4").style.display = "none";
+    document.getElementById("data5").style.display = "none";
+
+    // set the data
+    document.getElementById("data1status").classList.add("quote-boxunverified");
+    document.getElementById("data1status").classList.remove("quote-boxverified");
+    document.getElementById("verified_status").textContent = "Could Not Find ID";
+    document.getElementById("id").innerHTML = `Turbo Tx: ${txid}`;
+    document.getElementById("tx_hash").innerHTML = "";
   }
 }
  
@@ -250,7 +353,7 @@ function countTimer() {
              minute = "0"+minute;
            if(seconds < 10)
              seconds = "0"+seconds;
-           document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
+           document.getElementById("timer").innerHTML = `Time Since Tx Was Sent: ${hour}:${minute}:${seconds}`;
         }
 </script>
  
