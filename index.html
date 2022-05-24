@@ -238,8 +238,25 @@ async function get(URL)
  
 async function verifytx(txid)
 {
+  // clear the previous timers
+  clearInterval(timerVar);
+
   if (txid.length !== ID_LENGTH)
   {
+    // add the data
+    document.getElementById("data1").style.display = "block";
+    document.getElementById("data1info").style.display = "none";
+    document.getElementById("data2").style.display = "none";
+    document.getElementById("data3").style.display = "none";
+    document.getElementById("data4").style.display = "none";
+    document.getElementById("data5").style.display = "none";
+
+    // set the data
+    document.getElementById("data1status").classList.add("quote-boxunverified");
+    document.getElementById("data1status").classList.remove("quote-boxverified");
+    document.getElementById("verified_status").textContent = "Could Not Find ID";
+    document.getElementById("id").innerHTML = `Turbo Tx: ${txid}`;
+    document.getElementById("tx_hash").innerHTML = "";
     return;
   }
  
@@ -267,7 +284,7 @@ async function verifytx(txid)
         document.getElementById("tx_hash").innerHTML = `Tx: ${data.tx_hash}`;
 
         let delegate_status = Math.round((parseInt(data.delegate_count) / BLOCK_VERIFIER_TOTAL_AMOUNT) * 100);
-        document.getElementById("tx_status").innerHTML = data.block_status === "true" ? `Block Status: True` : `Delegate Verification Status: ${data.delegate_count}/${BLOCK_VERIFIER_TOTAL_AMOUNT} (${delegate_status})`; 
+        document.getElementById("tx_status").innerHTML = data.block_status === "true" ? `Block Status: True` : `Delegate Verification Status: ${data.delegate_count}/${BLOCK_VERIFIER_TOTAL_AMOUNT} (${delegate_status}%)`; 
 
         document.getElementById("sender").innerHTML = data.sender;
         document.getElementById("amount").innerHTML = data.amount / XCASH_SETTINGS;
@@ -294,7 +311,7 @@ async function verifytx(txid)
         document.getElementById("tx_hash").innerHTML = `Tx: ${data.tx_hash}`;
 
         let delegate_status = Math.round((parseInt(data.delegate_count) / BLOCK_VERIFIER_TOTAL_AMOUNT) * 100);
-        document.getElementById("tx_status").innerHTML = data.block_status === "true" ? `Block Status: True` : `Delegate Verification Status: ${data.delegate_count}/${BLOCK_VERIFIER_TOTAL_AMOUNT} (${delegate_status})`; 
+        document.getElementById("tx_status").innerHTML = data.block_status === "true" ? `Block Status: True` : `Delegate Verification Status: ${data.delegate_count}/${BLOCK_VERIFIER_TOTAL_AMOUNT} (${delegate_status}%)`; 
 
         document.getElementById("sender").innerHTML = data.sender;
         document.getElementById("amount").innerHTML = data.amount / XCASH_SETTINGS;
