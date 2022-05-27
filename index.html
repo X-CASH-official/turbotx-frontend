@@ -264,8 +264,11 @@ async function verifytx(txid)
   {
     // get the tx data
     let data = await get(`${URL}/getturbotx?id=${txid}`);
+    var timestamp_data;
     if (data.hasOwnProperty('tx_hash'))
     {
+      timestamp_data = data.block_status === "true" ? 1 : 1000000000;
+
       // check if its verified
       if (data.block_status === "true" || data.delegate_count >= BLOCK_VERIFIER_VALID_AMOUNT)
       {
@@ -292,7 +295,7 @@ async function verifytx(txid)
  
         // set the timer data
         timerVar = setInterval(countTimer, 1000);
-        totalSeconds = Math.round(new Date().getTime()/1000) - Math.round(data.timestamp / 1000000000);
+        totalSeconds = Math.round(new Date().getTime()/1000) - Math.round(data.timestamp / timestamp_data);
       }
       else
       {
@@ -319,7 +322,7 @@ async function verifytx(txid)
  
         // set the timer data
         timerVar = setInterval(countTimer, 1000);
-        totalSeconds = Math.round(new Date().getTime()/1000) - Math.round(data.timestamp / 1000000000);
+        totalSeconds = Math.round(new Date().getTime()/1000) - Math.round(data.timestamp / timestamp_data);
       }
     }
     else
